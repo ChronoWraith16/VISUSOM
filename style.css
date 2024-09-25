@@ -1,0 +1,11 @@
+nav a {
+    color: #fff;
+    text-decoration: none;
+    padding: 10px 15px;
+    transition: background-color 0.3s, transform 0.2s; /* Animação de transição */
+}
+
+nav a:hover {
+    background-color: #555; /* Muda a cor de fundo ao passar o mouse */
+    transform: scale(1.1); /* Aumenta levemente o tamanho do botão */
+}

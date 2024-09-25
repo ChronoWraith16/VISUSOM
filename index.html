@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seleção de Perfil</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-image: url('sua-imagem-de-fundo.jpg'); /* Substitua pela sua imagem */
+            background-size: cover;
+            background-position: center;
+            color: #333;
+            margin: 0;
+            display: flex;
+            height: 100vh;
+            justify-content: center; /* Centraliza horizontalmente */
+            align-items: center; /* Centraliza verticalmente */
+        }
+
+        nav {
+            background-color: rgba(0, 51, 102, 0.9);
+            color: #fff;
+            padding: 15px;
+            width: 200px;
+            transition: transform 0.3s;
+            position: absolute;
+            left: 10px;
+            top: 10px;
+            display: none;
+        }
+
+        nav.open {
+            display: block;
+        }
+
+        nav ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        nav ul li {
+            margin: 15px 0;
+        }
+
+        nav a {
+            color: #fff;
+            text-decoration: none;
+            padding: 10px 15px;
+            display: block;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        nav a:hover {
+            background-color: #0056b3;
+            transform: scale(1.05);
+        }
+
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .profile {
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+            padding: 30px;
+            text-align: center;
+            width: 250px;
+            transition: transform 0.3s;
+        }
+
+        .profile:hover {
+            transform: scale(1.05);
+        }
+
+        .profile img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            margin-bottom: 15px;
+        }
+
+        .form-container, .login-form-container {
+            display: none;
+            border: 1px solid #ccc;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .error {
+            color: red;
+            margin-top: 10px;
+        }
+
+        button {
+            padding: 10px 15px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+
+        .pagina-interna {
+            display: none;
+            background-image: url('sua-imagem-de-fundo-interna.jpg');
+            background-size: cover;
+            background-position: center;
+            padding: 50px;
+            color: white;
+            text-align: center;
+            height: 100vh;
+        }
+
+        .config-options {
+            margin-top: 30px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .toggle-menu {
+            position: absolute;
+            left: 10px;
+            top: 10px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        /* Adicionando uma animação de transição suave */
+        .fade-in {
+            opacity: 0;
+            animation: fadeIn 1s forwards;
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <button class="toggle-menu" onclick="toggleMenu()">☰ Menu</button>
+    <nav id="sideMenu">
+        <ul>
+            <li><a href="#" id="homeLink" onclick="showHome()">Home</a></li>
+            <li><a href="#" onclick="showPaginaInterna()">Configurações</a></li>
+            <li><a href="#" onclick="alert('Suporte por e-mail: suporte@exemplo.com')">Suporte</a></li>
+            <li><a href="#" onclick="logout()">Sair</a></li>
+        </ul>
+    </nav>
+
+    <div class="container" id="profileContainer">
+        <div class="profile">
+            <img src="imagem-aluno.jpg" alt="Perfil Aluno">
+            <h2>Aluno</h2>
+            <button onclick="showForm('aluno');">Selecionar</button>
+        </div>
+        <div class="profile">
+            <img src="imagem-professor.jpg" alt="Perfil Professor">
+            <h2>Professor</h2>
+            <button onclick="showForm('professor');">Selecionar</button>
+        </div>
+    </div>
+
+    <div class="form-container" id="formContainer">
+        <h2 id="formTitle"></h2>
+        <form id="cadastroForm">
+            <input type="text" id="username" placeholder="Nome de Usuário" required>
+            <input type="email" id="email" placeholder="E-mail" required>
+            <input type="password" id="senha" placeholder="Senha" required>
+            <input type="password" id="confirmacaoSenha" placeholder="Confirmação de Senha" required>
+            <button type="submit">Cadastrar</button>
+            <div class="error" id="error-message"></div>
+        </form>
+        <div class="login-link">
+            <p>Já tem login? <a href="#" onclick="showLoginForm()">Faça login aqui</a></p>
+        </div>
+    </div>
+
+    <div class="login-form-container" id="loginFormContainer">
+        <h2>Login</h2>
+        <form id="loginForm">
+            <input type="text" id="loginIdentificador" placeholder="E-mail ou Nome de Usuário" required>
+            <input type="password" id="loginSenha" placeholder="Senha" required>
+            <label>
+                <input type="checkbox" id="salvarDados"> Salvar dados?
+            </label>
+            <button type="submit">Login</button>
+            <div class="error" id="login-error-message"></div>
+        </form>
+    </div>
+
+    <div class="pagina-interna fade-in" id="paginaInterna">
+        <h1>Bem-vindo, <span id="usuarioNome"></span>!</h1>
+        <div class="config-options">
+            <button onclick="alert('Opção de alterar senha aqui!')">Alterar Senha</button>
+        </div>
+    </div>
+
+    <script>
+        const usuarios = {}; // Dicionário para armazenar os usuários cadastrados
+
+        function toggleMenu() {
+            const menu = document.getElementById('sideMenu');
+            menu.classList.toggle('open');
+            menu.style.display = menu.style.display === 'block' ? 'none' : 'block'; // Alterna a exibição do menu
+        }
+
+        function showForm(tipo) {
+            const formContainer = document.getElementById('formContainer');
+            const formTitle = document.getElementById('formTitle');
+            document.getElementById('loginFormContainer').style.display = 'none';
+            document.getElementById('error-message').innerText = '';
+
+            if (tipo === 'aluno') {
+                formTitle.innerText = 'Cadastro Aluno';
+                document.getElementById('email').placeholder = "E-mail do Aluno";
+            } else {
+                formTitle.innerText = 'Cadastro Professor';
+                document.getElementById('email').placeholder = "E-mail do Professor";
+            }
+            formContainer.style.display = 'block';
+        }
+
+        document.getElementById('cadastroForm').onsubmit = function(event) {
+            event.preventDefault();
+            const username = document.getElementById('username').value;
+            const email = document.getElementById('email').value;
+            const senha = document.getElementById('senha').value;
+            const confirmacaoSenha = document.getElementById('confirmacaoSenha').value;
+
+            document.getElementById('error-message').innerText = '';
+
+            if (usuarios[email]) {
+                document.getElementById('error-message').innerText = 'Este e-mail já está cadastrado.';
+                return;
+            }
+
+            if (senha !== confirmacaoSenha) {
+                document.getElementById('error-message').innerText = 'As senhas não conferem.';
+                return;
+            }
+
+            // Cadastra o usuário
+            usuarios[email] = { username, senha };
+            alert('Cadastro realizado com sucesso! Agora você pode fazer login.');
+            formContainer.style.display = 'none';
+            document.getElementById('loginFormContainer').style.display = 'block';
+        };
+
+        document.getElementById('loginForm').onsubmit = function(event) {
+            event.preventDefault();
+            const identificador = document.getElementById('loginIdentificador').value;
+            const senha = document.getElementById('loginSenha').value;
+
+            let user = usuarios[identificador] || Object.values(usuarios).find(u => u.username === identificador);
+
+            if (!user || user.senha !== senha) {
+                document.getElementById('login-error-message').innerText = 'Identificador ou senha incorretos.';
+                return;
+            }
+
+            document.getElementById('login-error-message').innerText = '';
+            document.getElementById('usuarioNome').innerText = user.username;
+
+            // Redireciona para a página interna com animação
+            document.getElementById('paginaInterna').style.display = 'block'; // Exibe a página interna
+            window.scrollTo({top: 0, behavior: 'smooth'}); // Rola suavemente para o topo
+            setTimeout(() => {
+                document.getElementById('paginaInterna').classList.add('fade-in'); // Adiciona a animação
+            }, 10); // Atraso para garantir que a animação seja aplicada
+        };
+
+        function showLoginForm() {
+            document.getElementById('formContainer').style.display = 'none';
+            document.getElementById('loginFormContainer').style.display = 'block';
+            document.getElementById('error-message').innerText = '';
+            document.getElementById('login-error-message').innerText = '';
+        }
+
+        function showHome() {
+            // Lógica para mostrar a página inicial
+            alert('Página inicial!');
+        }
+
+        function logout() {
+            // Lógica de logout
+            alert('Logout realizado!');
+            // Reinicia a página ou faz qualquer ação necessária
+            window.location.reload(); // Recarrega a página
+        }
+    </script>
+
+</body>
+</html>
